@@ -21,6 +21,13 @@ class TestBasic(unittest.TestCase):
 		check(1).dont.is_None()
 		self.assertRaises(CheckError, check(3).dont.exists)
 
+	def test_check_variable_name(self):
+		try:
+			my_var = 3
+			check(my_var, 'my_var').dont.exists()
+		except CheckError, e:
+			self.assertEquals(str(e), "'my_var should not exist'")
+
 
 class TestNumber(unittest.TestCase):
 

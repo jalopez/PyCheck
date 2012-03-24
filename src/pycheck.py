@@ -1,20 +1,23 @@
-def check(value):
-	return Variable(value)
+def check(value, var_name = None):
+	return Variable(value, var_name)
 
 
 class Variable(object):
 
-	def __init__(self, value):
+	def __init__(self, value, var_name):
 		self._value = value
 		self._negation = False
+		self._name = var_name
 
 	def exists(self):
-		error_msg = '%s does not exist' % (self._value,)
-		return self._check(self._value != None, error_msg)
+		error_msg = '%s should exist' % (self._name or self._value,)
+		dont_error_msg = '%s should not exist' % (self._name or self._value,)
+		return self._check(self._value != None, error_msg, dont_error_msg)
 		
 	def is_None(self):
-		error_msg = '%s has value' % (self._value,)
-		return self._check(self._value == None, error_msg)	
+		error_msg = '%s should not have any value' % (self._name or self._value,)
+		dont_error_msg = '%s should have some value' % (self._name or self._value,)
+		return self._check(self._value == None, error_msg, dont_error_msg)	
 
 
 	### Private methods
@@ -25,16 +28,19 @@ class Variable(object):
 		return self
 
 
-	def _check(self, validation, error_msg):
+	def _check(self, validation, error_msg, dont_error_msg = ''):
 		""" Check a validation against the value """
+		error = error_msg
+
 		if self._negation:
 			self._negation = False
 			validation = not validation
-			error_msg = 'Dont: ' + error_msg
+			error = dont_error_msg
+		
 		if validation:
 			return self		
 		else:
-			raise CheckError(error_msg)
+			raise CheckError(error)
 
 	def __getattribute__(self, name):
 		valid_attr_validations = (
