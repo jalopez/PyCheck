@@ -16,8 +16,11 @@ Basic Usage
 
     ```python
     def my_func(param1, param2):
+
         check(param1).exists()
         check(param2).is_number().positive()
+
+        # Code...
     ```
 
 Valid assertions
