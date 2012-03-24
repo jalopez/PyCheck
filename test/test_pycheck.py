@@ -10,7 +10,7 @@ class TestBasic(unittest.TestCase):
 		checker = check(None)
 		self.assertRaises(CheckError, checker.exists)
 
-	def test_is_none(self):
+	def test_is_None(self):
 		check(None).is_None()
 
 		checker = check(3)

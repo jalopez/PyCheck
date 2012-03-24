@@ -14,12 +14,21 @@ class Variable:
 			return self
 
 	def is_None(self):
+		self.__opposite(self.exists, '%s has value')
+
+
+	def __opposite(self, method, error_msg, *args):
+		"""
+			Executes the opposite method validation of the one passed 
+			as parameter.
+			The method can have a variable number of arguments
+		"""
 		try: 
-			self.exists()
+			method(*args)
 		except CheckError:
 			return self
 		else:
-			raise CheckError('%s has value' % (self.value))
+			raise CheckError(error_msg % (self.value))
 
 
 class CheckError(Exception):
