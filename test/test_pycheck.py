@@ -16,6 +16,12 @@ class TestBasic(unittest.TestCase):
 		check(1).exists().exists()
 		self.assertRaises(CheckError, check(3).exists().is_None)
 
+	def test_check_dont(self):
+		check(None).dont.exists()
+		check(1).dont.is_None()
+		self.assertRaises(CheckError, check(3).dont.exists)
+
+
 class TestNumber(unittest.TestCase):
 
 	def test_accept_number(self):
