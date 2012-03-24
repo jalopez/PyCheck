@@ -6,18 +6,15 @@ from pycheck import check, CheckError
 class TestBasic(unittest.TestCase):
 	def test_exists(self):
 		check(1).exists()
-
-		checker = check(None)
-		self.assertRaises(CheckError, checker.exists)
+		self.assertRaises(CheckError, check(None).exists)
 
 	def test_is_None(self):
 		check(None).is_None()
+		self.assertRaises(CheckError, check(3).is_None)
 
-		checker = check(3)
-		self.assertRaises(CheckError, checker.is_None)
-
-	def test_chain(self):
+	def test_check_chain(self):
 		check(1).exists().exists()
+		self.assertRaises(CheckError, check(3).exists().is_None)
 
 class TestNumber(unittest.TestCase):
 
