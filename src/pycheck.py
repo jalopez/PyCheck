@@ -1,2 +1,2 @@
 def check(variable):
-	return True
+	pass
