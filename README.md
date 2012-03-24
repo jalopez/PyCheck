@@ -7,15 +7,18 @@ of restrictions. It can be seen as a precondition validator
 Basic Usage
 -----------
 * Import the library:
-```python
-from pycheck import check
-```
+
+    ```python
+    from pycheck import check
+    ```
+
 * Use it inside any function
-```python
-def my\_func(param1, param2):
-    check(param1).exists()
-    check(param2).is\_number().positive()
-```
+
+    ```python
+    def my_func(param1, param2):
+        check(param1).exists()
+        check(param2).is_number().positive()
+    ```
 
 Valid assertions
 ----------------
