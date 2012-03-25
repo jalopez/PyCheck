@@ -1,11 +1,13 @@
 def check(value, var_name = None):
-    return Variable(value, var_name)
+    return VariableValidator(value, var_name)
+
+check.print_validations = False
 
 ### Decorators
 
 def only_warn(fn):
     """
-        Substitute check error exceptions by warnings
+        Substitute CheckError exceptions by warnings
     """
     def decorator(*args, **kwargs):
         try:
@@ -14,15 +16,29 @@ def only_warn(fn):
             print 'Warning: ' + str(e)
     return decorator
 
+def print_validations(fn):
+    """
+        Print all validations that are going to be executed
+    """
+    def decorator(*args, **kwargs):
+        # TODO: Find a better way to notify validation classes about print validations
+        check.print_validations = True
+        fn(*args, **kwargs)
+        check.print_validations = False
+    return decorator
 
 ### Validation classes
 
-class Variable(object):
+class VariableValidator(object):
 
     def __init__(self, value, var_name):
         self._value = value
         self._negation = False
         self._name = var_name
+        self._print_validations = check.print_validations
+
+        if self._print_validations:
+            print "Validations for %s" % (self._name or self._value)
 
     def exists(self):
         error_msg = '%s should exist' % (self._name or self._value,)
@@ -43,15 +59,18 @@ class Variable(object):
         return self
 
 
-    def _check(self, validation, error_msg, dont_error_msg = ''):
+    def _check(self, validation, error_msg, dont_error_msg = None):
         """ Check a validation against the value """
         error = error_msg
 
         if self._negation:
             self._negation = False
             validation = not validation
-            error = dont_error_msg
-        
+            error = dont_error_msg or 'Dont: ' + error_msg
+
+        if self._print_validations:
+            print ' - ' + error
+                
         if validation:
             return self     
         else:
