@@ -57,14 +57,15 @@ class Variable(object):
         else:
             raise CheckError(error)
 
-    def __getattribute__(self, name):
+    def __getattr__(self, name):
         valid_attr_validations = (
             'dont',
         )
         if name in valid_attr_validations:
             return object.__getattribute__(self, '_%s' % (name,))()
         else:
-            return object.__getattribute__(self, name)
+            raise AttributeError("%r object has no attribute %r" %
+                         (type(self).__name__, attr))
             
 
 class CheckError(Exception):
