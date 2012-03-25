@@ -4,6 +4,12 @@ from pycheck import check, CheckError, only_warn
 
 
 class TestBasic(unittest.TestCase):
+    # As check method raises an exception if validation fails,
+    # most tests don't have assertions (unittest does not have
+    # any assertion for an exception not being produced). 
+    # If something goes wrong, an exception will be raised and 
+    # the test will fail
+
     def test_exists(self):
         check(1).exists() 
         self.assertRaises(CheckError, check(None).exists)
@@ -20,8 +26,12 @@ class TestBasic(unittest.TestCase):
         check(None).dont.exists()
         check(1).dont.is_None()
         self.assertRaises(CheckError, check(3).dont.exists)
+        # Dont only applies once
+        check(None).dont.exists().is_None()
+        # Chaining dont's
+        check(None).dont.exists().dont.exists()
 
-    def test_check_variable_name(self):
+    def test_check_with_variable_name(self):
         try:
             my_var = 3
             check(my_var, 'my_var').dont.exists()
