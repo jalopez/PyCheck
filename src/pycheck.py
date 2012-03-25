@@ -1,6 +1,7 @@
 def check(value, var_name = None):
 	return Variable(value, var_name)
 
+check._a = 'hola'
 
 class Variable(object):
 
@@ -47,8 +48,7 @@ class Variable(object):
 			'dont',
 		)
 		if name in valid_attr_validations:
-			object.__getattribute__(self, '_%s' % (name,))()
-			return self
+			return object.__getattribute__(self, '_%s' % (name,))()
 		else:
 			return object.__getattribute__(self, name)
 			
@@ -57,4 +57,4 @@ class CheckError(Exception):
 	def __init__(self, value):
 		self.value = value
 	def __str__(self):
-		return repr(self.value)
+		return str(self.value)
