@@ -1,60 +1,74 @@
 def check(value, var_name = None):
-	return Variable(value, var_name)
+    return Variable(value, var_name)
 
-check._a = 'hola'
+### Decorators
+
+def only_warn(fn):
+    """
+        Substitute check error exceptions by warnings
+    """
+    def decorator(*args, **kwargs):
+        try:
+            fn(*args, **kwargs)
+        except CheckError, e:
+            print 'Warning: ' + str(e)
+    return decorator
+
+
+### Validation classes
 
 class Variable(object):
 
-	def __init__(self, value, var_name):
-		self._value = value
-		self._negation = False
-		self._name = var_name
+    def __init__(self, value, var_name):
+        self._value = value
+        self._negation = False
+        self._name = var_name
 
-	def exists(self):
-		error_msg = '%s should exist' % (self._name or self._value,)
-		dont_error_msg = '%s should not exist' % (self._name or self._value,)
-		return self._check(self._value != None, error_msg, dont_error_msg)
-		
-	def is_None(self):
-		error_msg = '%s should not have any value' % (self._name or self._value,)
-		dont_error_msg = '%s should have some value' % (self._name or self._value,)
-		return self._check(self._value == None, error_msg, dont_error_msg)	
-
-
-	### Private methods
-
-	def _dont(self):
-		""" Negates the next validation """
-		self._negation = True
-		return self
+    def exists(self):
+        error_msg = '%s should exist' % (self._name or self._value,)
+        dont_error_msg = '%s should not exist' % (self._name or self._value,)
+        return self._check(self._value != None, error_msg, dont_error_msg)
+        
+    def is_None(self):
+        error_msg = '%s should not have any value' % (self._name or self._value,)
+        dont_error_msg = '%s should have some value' % (self._name or self._value,)
+        return self._check(self._value == None, error_msg, dont_error_msg)  
 
 
-	def _check(self, validation, error_msg, dont_error_msg = ''):
-		""" Check a validation against the value """
-		error = error_msg
+    ### Private methods
 
-		if self._negation:
-			self._negation = False
-			validation = not validation
-			error = dont_error_msg
-		
-		if validation:
-			return self		
-		else:
-			raise CheckError(error)
+    def _dont(self):
+        """ Negates the next validation """
+        self._negation = True
+        return self
 
-	def __getattribute__(self, name):
-		valid_attr_validations = (
-			'dont',
-		)
-		if name in valid_attr_validations:
-			return object.__getattribute__(self, '_%s' % (name,))()
-		else:
-			return object.__getattribute__(self, name)
-			
+
+    def _check(self, validation, error_msg, dont_error_msg = ''):
+        """ Check a validation against the value """
+        error = error_msg
+
+        if self._negation:
+            self._negation = False
+            validation = not validation
+            error = dont_error_msg
+        
+        if validation:
+            return self     
+        else:
+            raise CheckError(error)
+
+    def __getattribute__(self, name):
+        valid_attr_validations = (
+            'dont',
+        )
+        if name in valid_attr_validations:
+            return object.__getattribute__(self, '_%s' % (name,))()
+        else:
+            return object.__getattribute__(self, name)
+            
 
 class CheckError(Exception):
-	def __init__(self, value):
-		self.value = value
-	def __str__(self):
-		return str(self.value)
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return str(self.value)
