@@ -1,6 +1,7 @@
 import unittest
 
-from pycheck import check, CheckError, only_warn
+from pycheck import check, only_warn
+from validators import CheckError
 
 
 class TestBasic(unittest.TestCase):
