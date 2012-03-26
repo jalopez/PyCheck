@@ -51,3 +51,6 @@ class TestNumber(unittest.TestCase):
 
     #def test_is_number(self):
     #   check(0).is_number()
+
+if __name__ == "__main__":
+    unittest.main()
