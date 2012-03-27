@@ -2,7 +2,10 @@ from validators import *
 
 
 def check(value, var_name = None):
-    return VariableValidator(value, var_name, check.print_validations)
+    if isinstance(value, (int, long, float, complex)):
+        return NumericValue(value, var_name, check.print_validations)
+    else:
+        return VariableValidator(value, var_name, check.print_validations)
 
 check.print_validations = False
 
@@ -10,7 +13,7 @@ check.print_validations = False
 
 def only_warn(fn):
     """
-        Substitute CheckError exceptions by warnings
+       Substitute CheckError exceptions by warnings
     """
     def decorator(*args, **kwargs):
         try:

@@ -10,14 +10,18 @@ class VariableValidator(object):
             print "Validations for %s" % (self._name or self._value)
 
     def exists(self):
-        error_msg = '%s should exist' % (self._name or self._value,)
-        dont_error_msg = '%s should not exist' % (self._name or self._value,)
+        error_msg = '%s should exist' % (self._name or self._value)
+        dont_error_msg = '%s should not exist' % (self._name or self._value)
         return self._check(self._value != None, error_msg, dont_error_msg)
         
     def is_None(self):
-        error_msg = '%s should not have any value' % (self._name or self._value,)
-        dont_error_msg = '%s should have some value' % (self._name or self._value,)
+        error_msg = '%s should not have any value' % (self._name or self._value)
+        dont_error_msg = '%s should have some value' % (self._name or self._value)
         return self._check(self._value == None, error_msg, dont_error_msg)  
+
+    def is_number(self):
+        error_msg = '%s is not a number' % (self._name or self._value)
+        return self._fail(error_msg)
 
 
     ### Private methods
@@ -45,16 +49,39 @@ class VariableValidator(object):
         else:
             raise CheckError(error)
 
+    def _fail(self, error_msg):
+        """ Fail unless dont is modifying the validation """
+        if self._negation:
+            self._negation = False
+            return self
+        else:
+            raise CheckError(error_msg)
+    
+    def _success(self, error_msg):
+        """ Success unless dont is modifying the validation """
+        if self._negation:
+            raise CheckError(error_msg)
+        else:
+            return self
+
     def __getattr__(self, name):
         valid_attr_validations = (
             'dont',
         )
+
         if name in valid_attr_validations:
             return object.__getattribute__(self, '_%s' % (name,))()
         else:
             raise AttributeError("%r object has no attribute %r" %
-                         (type(self).__name__, attr))
-            
+                         (type(self).__name__, name))
+
+class NumericValue(VariableValidator):
+
+    def is_number(self):
+        error_msg = '%s is a number' % (self._name or self._value)
+        return self._success(error_msg)
+
+
 class CheckError(Exception):
     def __init__(self, value):
         self.value = value

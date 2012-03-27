@@ -50,8 +50,14 @@ class TestNumber(unittest.TestCase):
     def test_accept_number(self):
         check(3)
 
-    #def test_is_number(self):
-    #   check(0).is_number()
+    def test_is_number(self):
+        check(0).is_number()
+        check("hello").dont.is_number()
+        self.assertRaises(CheckError, check("hello").is_number)
+        self.assertRaises(CheckError, check(3).dont.is_number)
+
+    def test_is_number_with_booleans(self):
+        pass
 
 if __name__ == "__main__":
     unittest.main()
