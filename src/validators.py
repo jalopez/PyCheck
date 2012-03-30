@@ -10,29 +10,50 @@ class VariableValidator(object):
         if self._print_validations:
             print "Validations for %s" % (self._print_name)
 
+
     def exists(self):
         error_msg = '%s should exist' % (self._print_name)
         dont_error_msg = '%s should not exist' % (self._print_name)
         return self._check(self._value != None, error_msg, dont_error_msg)
-        
+
+
     def is_None(self):
         error_msg = '%s should not have any value' % (self._print_name)
         dont_error_msg = '%s should have some value' % (self._print_name)
         return self._check(self._value == None, error_msg, dont_error_msg)  
 
+
     def equals(self, other):
         error_msg = '%s should be equal to %s' % (self._print_name, other)
-        dont_error_msg = '%s should not be equal to %s' % (self._print_name, other)
+        dont_error_msg = '%s should be distinct to %s' % (self._print_name, other)
         # To be overriden in complex classes
         return self._check(self._value == other, error_msg, dont_error_msg)
 
 
+    def distinct(self, other):
+        error_msg = '%s should be distinct to %s' % (self._print_name, other)
+        dont_error_msg = '%s should be equal to %s' % (self._print_name, other)
+        # To be overriden in complex classes
+        return self._check(self._value != other, error_msg, dont_error_msg)
+
+
+    def gt(self, other):
+        error_msg = '%s should be greater than %s' % (self._print_name, other)
+        dont_error_msg = '%s should not be greater than %s' % (self._print_name, other)
+        return self._check(self._value > other, error_msg, dont_error_msg)
+
+    ## TODO: Think a better way of handling these kind of methods
     def is_number(self):
-        error_msg = '%s should not be a number' % (self._print_name)
-        return self._fail(error_msg)
+        error_msg = '%s should be a number' % (self._print_name)
+        dont_error_msg = '%s should not be a number' % (self._print_name)
+        return self._check(isinstance(self._value, (int, long, float, complex)), 
+                        error_msg, dont_error_msg)
+
 
     def is_int(self):
-        return self.is_number()
+        error_msg = '%s should be an integer' % (self._print_name)
+        dont_error_msg = '%s should not be an integer' % (self._print_name)
+        return self._check(isinstance(self._value, (int)), error_msg, dont_error_msg)
 
 
     ### Private methods
@@ -60,6 +81,7 @@ class VariableValidator(object):
         else:
             raise CheckError(error)
 
+
     def _fail(self, error_msg):
         """ Fail unless dont is modifying the validation """
         if self._negation:
@@ -67,6 +89,7 @@ class VariableValidator(object):
             return self
         else:
             raise CheckError(error_msg)
+
     
     def _success(self, error_msg):
         """ Success unless dont is modifying the validation """
@@ -74,6 +97,7 @@ class VariableValidator(object):
             raise CheckError(error_msg)
         else:
             return self
+
 
     def __getattr__(self, name):
         valid_attr_validations = (
@@ -86,16 +110,7 @@ class VariableValidator(object):
             raise AttributeError("%r object has no attribute %r" %
                          (type(self).__name__, name))
 
-class NumericValue(VariableValidator):
 
-    def is_number(self):
-        error_msg = '%s should be a number' % (self._print_name)
-        return self._success(error_msg)
-
-    def is_int(self):
-        error_msg = '%s should be an integer' % (self._print_name)
-        dont_error_msg = '%s should not be an integer' % (self._print_name)
-        return self._check(isinstance(self._value, (int)), error_msg, dont_error_msg)
 
 class CheckError(Exception):
     def __init__(self, value):

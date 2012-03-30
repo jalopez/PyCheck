@@ -20,15 +20,7 @@ class TestBasic(unittest.TestCase):
         check(None).is_None()
         self.assertRaises(CheckError, check(3).is_None)
 
-
-    def test_equals(self):
-        check(None).equals(None)
-        check("hello").equals("hello")
-        check(2).equals(2)
-        check(2).dont.equals(3)
-        check(2).dont.equals("2")
-
-
+    
     def test_check_dont(self):
         check(None).dont.exists()
         check(1).dont.is_None()
@@ -51,11 +43,35 @@ class TestBasic(unittest.TestCase):
         except CheckError, e:
             self.assertEquals(str(e), 'my_var should not exist')
 
+
     def test_only_warn_decorator(self):
         @only_warn
         def my_func(param1):
             check(param1).exists()
         my_func(None) # Should not raise an exception
+
+
+    def test_equals(self):
+        check(None).equals(None)
+        check("hello").equals("hello")
+        check(2).equals(2)
+        check(2).dont.equals(3)
+        check(2).dont.equals("2")
+
+    
+    def test_distinct(self):
+        check(3).distinct(None)
+        check("a").distinct("b")
+        check(3).dont.distinct(3)
+
+
+    def test_gt(self):
+        check(3).gt(2)
+        check("b").gt("a")
+        check("2").gt(1)
+        check(1).dont.gt("a")
+
+
 
 class TestNumber(unittest.TestCase):
 

@@ -2,10 +2,7 @@ from validators import *
 
 
 def check(value, var_name = None):
-    if isinstance(value, (int, long, float, complex)):
-        return NumericValue(value, var_name, check.print_validations)
-    else:
-        return VariableValidator(value, var_name, check.print_validations)
+    return VariableValidator(value, var_name, check.print_validations)
 
 check.print_validations = False
 
