@@ -2,25 +2,33 @@ class VariableValidator(object):
 
     def __init__(self, value, var_name, print_validations):
         self._value = value
+        self._print_name = var_name or value
         self._negation = False
-        self._name = var_name
+
         self._print_validations = print_validations
 
         if self._print_validations:
-            print "Validations for %s" % (self._name or self._value)
+            print "Validations for %s" % (self._print_name)
 
     def exists(self):
-        error_msg = '%s should exist' % (self._name or self._value)
-        dont_error_msg = '%s should not exist' % (self._name or self._value)
+        error_msg = '%s should exist' % (self._print_name)
+        dont_error_msg = '%s should not exist' % (self._print_name)
         return self._check(self._value != None, error_msg, dont_error_msg)
         
     def is_None(self):
-        error_msg = '%s should not have any value' % (self._name or self._value)
-        dont_error_msg = '%s should have some value' % (self._name or self._value)
+        error_msg = '%s should not have any value' % (self._print_name)
+        dont_error_msg = '%s should have some value' % (self._print_name)
         return self._check(self._value == None, error_msg, dont_error_msg)  
 
+    def equals(self, other):
+        error_msg = '%s should be equal to %s' % (self._print_name, other)
+        dont_error_msg = '%s should not be equal to %s' % (self._print_name, other)
+        # To be overriden in complex classes
+        return self._check(self._value == other, error_msg, dont_error_msg)
+
+
     def is_number(self):
-        error_msg = '%s should not be a number' % (self._name or self._value)
+        error_msg = '%s should not be a number' % (self._print_name)
         return self._fail(error_msg)
 
     def is_int(self):
@@ -81,12 +89,12 @@ class VariableValidator(object):
 class NumericValue(VariableValidator):
 
     def is_number(self):
-        error_msg = '%s should be a number' % (self._name or self._value)
+        error_msg = '%s should be a number' % (self._print_name)
         return self._success(error_msg)
 
     def is_int(self):
-        error_msg = '%s should be an integer' % (self._name or self._value)
-        dont_error_msg = '%s should not be an integer' % (self._name or self._value)
+        error_msg = '%s should be an integer' % (self._print_name)
+        dont_error_msg = '%s should not be an integer' % (self._print_name)
         return self._check(isinstance(self._value, (int)), error_msg, dont_error_msg)
 
 class CheckError(Exception):

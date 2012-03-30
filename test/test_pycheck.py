@@ -15,13 +15,19 @@ class TestBasic(unittest.TestCase):
         check(1).exists() 
         self.assertRaises(CheckError, check(None).exists)
 
+
     def test_is_None(self):
         check(None).is_None()
         self.assertRaises(CheckError, check(3).is_None)
 
-    def test_check_chain(self):
-        check(1).exists().exists()
-        self.assertRaises(CheckError, check(3).exists().is_None)
+
+    def test_equals(self):
+        check(None).equals(None)
+        check("hello").equals("hello")
+        check(2).equals(2)
+        check(2).dont.equals(3)
+        check(2).dont.equals("2")
+
 
     def test_check_dont(self):
         check(None).dont.exists()
@@ -31,6 +37,12 @@ class TestBasic(unittest.TestCase):
         check(None).dont.exists().is_None()
         # Chaining dont's
         check(None).dont.exists().dont.exists()
+
+
+    def test_check_chain(self):
+        check(1).exists().exists()
+        self.assertRaises(CheckError, check(3).exists().is_None)
+
 
     def test_check_with_variable_name(self):
         try:
