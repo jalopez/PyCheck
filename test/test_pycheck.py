@@ -72,6 +72,9 @@ class TestBasic(unittest.TestCase):
         check(1).dont.gt("a")
 
 
+    def test_ge(self):
+        check(2).ge(2).ge(1)
+        check(1)
 
 class TestNumber(unittest.TestCase):
 
@@ -93,7 +96,11 @@ class TestNumber(unittest.TestCase):
 
 
     def test_is_number_with_booleans(self):
-        pass
+        check(True).is_int()
+        check(1).equals(True)
+        check(0).equals(False)
+        check(2).dont.equals(False).dont.equals(True)
+        check(-1).dont.equals(False)
 
 if __name__ == "__main__":
     unittest.main()

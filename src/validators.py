@@ -42,7 +42,13 @@ class VariableValidator(object):
         dont_error_msg = '%s should not be greater than %s' % (self._print_name, other)
         return self._check(self._value > other, error_msg, dont_error_msg)
 
-    ## TODO: Think a better way of handling these kind of methods
+
+    def ge(self, other):
+        error_msg = '%s should be greater than %s' % (self._print_name, other)
+        dont_error_msg = '%s should not be greater than %s' % (self._print_name, other)
+        return self._check(self._value >= other, error_msg, dont_error_msg)
+
+
     def is_number(self):
         error_msg = '%s should be a number' % (self._print_name)
         dont_error_msg = '%s should not be a number' % (self._print_name)
