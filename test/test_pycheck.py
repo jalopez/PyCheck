@@ -70,11 +70,12 @@ class TestBasic(unittest.TestCase):
         check("b").gt("a")
         check("2").gt(1)
         check(1).dont.gt("a")
-
+        check(1).gt(0.99)
 
     def test_ge(self):
         check(2).ge(2).ge(1)
-        check(1)
+        check(1).dont.ge(2)
+        check(1).gt(-2).ge(1)
 
 class TestNumber(unittest.TestCase):
 
