@@ -56,6 +56,14 @@ class TestNumber(unittest.TestCase):
         self.assertRaises(CheckError, check("hello").is_number)
         self.assertRaises(CheckError, check(3).dont.is_number)
 
+    def test_is_int(self):
+        check(0).is_int()
+        check(2.3).dont.is_int()
+        check("hello").dont.is_int()
+        self.assertRaises(CheckError, check(2.3).is_int)
+        self.assertRaises(CheckError, check("hello").is_int)
+
+
     def test_is_number_with_booleans(self):
         pass
 
