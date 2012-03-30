@@ -20,8 +20,11 @@ class VariableValidator(object):
         return self._check(self._value == None, error_msg, dont_error_msg)  
 
     def is_number(self):
-        error_msg = '%s is not a number' % (self._name or self._value)
+        error_msg = '%s should not be a number' % (self._name or self._value)
         return self._fail(error_msg)
+
+    def is_int(self):
+        return self.is_number()
 
 
     ### Private methods
@@ -78,9 +81,13 @@ class VariableValidator(object):
 class NumericValue(VariableValidator):
 
     def is_number(self):
-        error_msg = '%s is a number' % (self._name or self._value)
+        error_msg = '%s should be a number' % (self._name or self._value)
         return self._success(error_msg)
 
+    def is_int(self):
+        error_msg = '%s should be an integer' % (self._name or self._value)
+        dont_error_msg = '%s should not be an integer' % (self._name or self._value)
+        return self._check(isinstance(self._value, (int)), error_msg, dont_error_msg)
 
 class CheckError(Exception):
     def __init__(self, value):
